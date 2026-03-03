@@ -103,7 +103,7 @@
                     <li><strong>🌐 OpenRouter</strong> — Access multiple models</li>
                 </ul>
                 <div style="margin-top:12px;padding:10px 14px;background:rgba(78,205,196,0.08);border:1px solid rgba(78,205,196,0.2);border-radius:8px;font-size:0.8rem;">
-                    📄 <strong>Ollama setup guide:</strong> See <a href="docs/OLLAMA_SETUP.md" target="_blank" style="color:#4ecdc4;text-decoration:underline;">OLLAMA_SETUP.md</a> for step-by-step instructions.
+                    📄 <strong>Ollama setup guide:</strong> See <a href="https://github.com/iclickthemouse/ChromaPulse/blob/main/docs/OLLAMA_SETUP.md" target="_blank" style="color:#4ecdc4;text-decoration:underline;">OLLAMA_SETUP.md</a> for step-by-step instructions.
                 </div>
             `,
             position: 'bottom-left',

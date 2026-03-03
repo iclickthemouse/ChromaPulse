@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaPulse — Color Palette Generator</title>
+    <meta name="description"
+        content="Generate stunning color palettes with harmony rules, trending palettes, Pantone matching, and preset saving.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="onboarding.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="app-header">
+        <div class="header-left">
+            <div class="logo">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="10" cy="10" r="8" fill="#FF6B6B" opacity="0.8" />
+                    <circle cx="18" cy="10" r="8" fill="#4ECDC4" opacity="0.8" />
+                    <circle cx="14" cy="17" r="8" fill="#A78BFA" opacity="0.8" />
+                </svg>
+                <h1>ChromaPulse</h1>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="harmony-selector" id="harmony-selector">
+                <button class="harmony-btn active" data-harmony="random" title="Random">🎲 Random</button>
+                <button class="harmony-btn" data-harmony="analogous" title="Analogous">Analogous</button>
+                <button class="harmony-btn" data-harmony="complementary" title="Complementary">Complement</button>
+                <button class="harmony-btn" data-harmony="triadic" title="Triadic">Triadic</button>
+                <button class="harmony-btn" data-harmony="split-complementary"
+                    title="Split Complementary">Split</button>
+                <button class="harmony-btn" data-harmony="tetradic" title="Tetradic / Square">Tetradic</button>
+                <button class="harmony-btn" data-harmony="monochromatic" title="Monochromatic">Mono</button>
+                <button class="harmony-btn" data-harmony="compound" title="Compound">Compound</button>
+                <button class="harmony-btn" data-harmony="shades" title="Shades">Shades</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="btn-trending" class="icon-btn" title="Trending Palettes">📊 Trends</button>
+            <button id="btn-presets" class="icon-btn" title="Saved Presets">💾 Presets</button>
+            <button id="btn-debug" class="icon-btn" title="LLM Debug Log">🔍 Log</button>
+            <button id="btn-settings" class="icon-btn" title="AI Settings">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Prompt Bar -->
+    <div id="prompt-bar">
+        <div class="prompt-wrapper">
+            <span class="prompt-icon">✨</span>
+            <input type="text" id="prompt-input"
+                placeholder='Describe a mood, theme, or scene... (e.g. "cozy autumn cabin", "futuristic neon city")'
+                autocomplete="off">
+            <button id="btn-prompt-generate" class="prompt-btn" title="Generate from prompt">Generate</button>
+        </div>
+    </div>
+
+    <!-- Main Palette Display -->
+    <main id="palette-container">
+        <!-- Colors will be injected here by JS -->
+    </main>
+
+    <!-- Bottom Bar -->
+    <footer id="bottom-bar">
+        <div class="bottom-left">
+            <label class="color-count-label">
+                Colors:
+                <select id="color-count">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+            </label>
+            <button id="btn-lock-all" class="small-btn" title="Lock/Unlock All">🔓</button>
+        </div>
+        <div class="bottom-center">
+            <button id="btn-generate" class="generate-btn" title="Generate New Palette (Spacebar)">
+                <span class="gen-icon">🎲</span>
+                <span>Generate</span>
+                <kbd>Space</kbd>
+            </button>
+        </div>
+        <div class="bottom-right">
+            <button id="btn-save" class="small-btn" title="Save Current Palette">💾 Save</button>
+            <button id="btn-export" class="small-btn" title="Export as Text">📋 Text</button>
+            <button id="btn-export-img" class="small-btn" title="Export as Image">📸 Image</button>
+        </div>
+    </footer>
+
+    <!-- Image Export Preview -->
+    <div id="export-preview" class="dialog hidden">
+        <div class="dialog-content export-dialog-content">
+            <h3>📸 Swatch Card</h3>
+            <div id="export-canvas-wrap">
+                <canvas id="export-canvas"></canvas>
+            </div>
+            <div class="dialog-actions export-actions">
+                <button id="export-close" class="small-btn">Close</button>
+                <button id="export-copy-img" class="small-btn primary">📋 Copy to Clipboard</button>
+                <button id="export-download" class="small-btn primary">⬇ Full Palette</button>
+                <button id="export-cards" class="small-btn primary">🃏 Individual Cards</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden canvas for rendering -->
+    <canvas id="render-canvas" style="display:none;"></canvas>
+
+    <!-- Presets Panel -->
+    <div id="presets-panel" class="side-panel hidden">
+        <div class="panel-header">
+            <h2>Saved Presets</h2>
+            <button class="panel-close" id="close-presets">✕</button>
+        </div>
+        <div id="presets-list" class="panel-body">
+            <p class="empty-state">No presets saved yet. Generate a palette and hit Save!</p>
+        </div>
+    </div>
+
+    <!-- Trending Panel -->
+    <div id="trending-panel" class="side-panel hidden">
+        <div class="panel-header">
+            <h2>Trending Palettes</h2>
+            <button class="panel-close" id="close-trending">✕</button>
+        </div>
+        <div id="trending-list" class="panel-body">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Debug Log Panel -->
+    <div id="debug-panel" class="side-panel hidden">
+        <div class="panel-header">
+            <h2>🔍 LLM Query Log</h2>
+            <div style="display:flex;gap:6px;">
+                <button class="panel-close" id="clear-debug" title="Clear Log">🗑️</button>
+                <button class="panel-close" id="close-debug">✕</button>
+            </div>
+        </div>
+        <div id="debug-list" class="panel-body">
+            <p class="empty-state">No queries yet. Use the prompt bar to generate a palette.</p>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay hidden"></div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Save Dialog -->
+    <div id="save-dialog" class="dialog hidden">
+        <div class="dialog-content">
+            <h3>Save Palette</h3>
+            <input type="text" id="preset-name" placeholder="My Cool Palette" maxlength="40" autocomplete="off">
+            <div class="dialog-actions">
+                <button id="save-cancel" class="small-btn">Cancel</button>
+                <button id="save-confirm" class="small-btn primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Settings Dialog -->
+    <div id="settings-dialog" class="dialog hidden">
+        <div class="dialog-content settings-dialog-content">
+            <h3>⚙️ AI Settings</h3>
+            <p class="settings-desc">
+                Prompt generation works <strong>offline</strong> with smart keyword matching (100+ keywords).<br><br>
+                For richer AI-powered results, choose a provider below.
+            </p>
+
+            <label class="settings-label">Provider</label>
+            <select id="ai-provider">
+                <option value="ollama">🏠 Ollama (local, free)</option>
+                <option value="openai">🔑 OpenAI API</option>
+                <option value="groq">⚡ Groq (free tier)</option>
+                <option value="openrouter">🌐 OpenRouter</option>
+            </select>
+
+            <div id="ollama-setup-wrap">
+                <div class="settings-setup">
+                    <div class="setup-step">
+                        <span class="step-num">1</span>
+                        <span>Install <a href="https://ollama.com/download" target="_blank"
+                                style="color:#4ecdc4;">Ollama</a></span>
+                    </div>
+                    <div class="setup-step">
+                        <span class="step-num">2</span>
+                        <span>Run: <code>ollama pull qwen3.5:35b-a3b</code></span>
+                    </div>
+                    <div class="setup-step">
+                        <span class="step-num">3</span>
+                        <span>Keep Ollama running, then hit "Test Connection" below</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="api-key-wrap" class="hidden">
+                <label class="settings-label">API Key</label>
+                <input type="password" id="ai-api-key" placeholder="sk-..." autocomplete="off">
+                <div id="api-key-help" style="font-size:0.72rem;color:#9CA3AF;margin-top:4px;"></div>
+            </div>
+
+            <label class="settings-label">Model</label>
+            <select id="ollama-model">
+                <optgroup label="⭐ Recommended">
+                    <option value="qwen3.5:35b-a3b">Qwen 3.5 35B ⭐ (best knowledge)</option>
+                    <option value="qwen3:8b">Qwen 3 8B (~5GB, great balance)</option>
+                    <option value="qwen2.5:7b">Qwen 2.5 7B (~4.5GB)</option>
+                </optgroup>
+                <optgroup label="⚡ Faster">
+                    <option value="qwen2.5:3b">Qwen 2.5 3B (~2GB)</option>
+                    <option value="qwen2.5:1.5b">Qwen 2.5 1.5B (~1GB)</option>
+                </optgroup>
+                <optgroup label="Custom">
+                    <option value="custom">Custom model...</option>
+                </optgroup>
+            </select>
+
+            <div id="custom-model-wrap" class="hidden">
+                <label class="settings-label">Custom Model Name</label>
+                <input type="text" id="ollama-custom-model" placeholder="my-model:latest" autocomplete="off">
+            </div>
+
+            <div id="ollama-host-wrap">
+                <label class="settings-label">Ollama Host</label>
+                <input type="text" id="ollama-host" placeholder="http://localhost:11434" value="http://localhost:11434"
+                    autocomplete="off">
+            </div>
+
+            <div class="settings-status" id="ai-status">Mode: <strong>Smart Keywords</strong> (offline)</div>
+
+            <div style="margin-top:4px;margin-bottom:14px;">
+                <button id="btn-restart-tour" class="small-btn"
+                    style="width:100%;text-align:center;font-size:0.78rem;">🎓 Restart Onboarding Tour</button>
+            </div>
+
+            <div class="dialog-actions">
+                <button id="settings-cancel" class="small-btn">Cancel</button>
+                <button id="settings-test" class="small-btn">🔌 Test</button>
+                <button id="settings-save" class="small-btn primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="pantone.js"></script>
+    <script src="app.js"></script>
+    <script src="onboarding.js"></script>
+</body>
+
+</html>

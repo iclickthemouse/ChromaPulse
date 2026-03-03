@@ -3,7 +3,16 @@
 > AI-powered color palette generator with harmony rules, Pantone matching, and beautiful exports.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![No Backend Required](https://img.shields.io/badge/backend-none%20required-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6.svg)
+![Offline](https://img.shields.io/badge/works-offline-green.svg)
+
+---
+
+## ⬇️ Download
+
+**[Download ChromaPulse.exe →](https://github.com/iclickthemouse/ChromaPulse/releases/latest)**
+
+Just download, double-click, and start creating. No install required.
 
 ---
 
@@ -19,36 +28,36 @@
 - **Color Picker** — Click any color to customize with native color picker
 - **Lock & Remix** — Lock colors you like, regenerate the rest
 - **LLM Debug Log** — See raw AI responses for transparency
+- **Guided Onboarding** — First-launch tour walks you through every feature
 - **Keyboard Shortcuts** — `Spacebar` to generate, `Enter` for prompt
 
 ---
 
 ## 🚀 Getting Started
 
-### Option 1: Open Directly
+### Option 1: Standalone App (Recommended)
 
-Simply open `index.html` in your browser. The app works out of the box with offline keyword matching.
+1. Download **ChromaPulse.exe** from the [Releases page](https://github.com/iclickthemouse/ChromaPulse/releases/latest)
+2. Double-click to launch — opens in its own native window
+3. No Python, no browser, no install needed
 
-### Option 2: Local Server (Recommended for AI features)
+### Option 2: Run from Source
+
+If you prefer running from source or want to develop:
 
 ```bash
-# Using Python
+# Clone the repo
+git clone https://github.com/iclickthemouse/ChromaPulse.git
+cd ChromaPulse
+
+# Start local server
 python -m http.server 8484
 
-# Or using the included script (Windows)
+# Or use the included script (Windows)
 start.bat
 ```
 
 Then visit [http://localhost:8484](http://localhost:8484).
-
-### Option 3: GitHub Pages
-
-This app is a static site — you can host it on GitHub Pages:
-
-1. Push this repo to GitHub
-2. Go to **Settings → Pages**
-3. Set source to **main** branch, root `/`
-4. Your app will be live at `https://iclickthemouse.github.io/ChromaPulse/`
 
 ---
 
@@ -58,32 +67,24 @@ ChromaPulse supports multiple AI backends for enhanced palette generation:
 
 | Provider | Cost | Setup |
 |---|---|---|
-| **🏠 Ollama** | Free | Local install — see [docs/OLLAMA_SETUP.md](docs/OLLAMA_SETUP.md) |
+| **🏠 Ollama** | Free | Local, private — see [Ollama Setup Guide](docs/OLLAMA_SETUP.md) |
 | **⚡ Groq** | Free tier | [Get API key](https://console.groq.com/keys) |
 | **🔑 OpenAI** | Pay-per-use | [Get API key](https://platform.openai.com/api-keys) |
 | **🌐 OpenRouter** | Varies | [Get API key](https://openrouter.ai/keys) |
 
-> **Note**: AI features are optional. The app works fully offline with its built-in keyword engine.
+> **Note**: AI is optional. ChromaPulse works fully offline with its built-in keyword engine (100+ keywords). Connect an AI provider for richer, context-aware results.
 
-For Ollama setup, see the comprehensive guide: **[docs/OLLAMA_SETUP.md](docs/OLLAMA_SETUP.md)**
+For local AI setup, see: **[docs/OLLAMA_SETUP.md](docs/OLLAMA_SETUP.md)**
 
 ---
 
 ## 🔒 Security & Privacy
 
-ChromaPulse is designed with privacy in mind:
-
-- **No backend server** — 100% client-side static HTML/JS/CSS
 - **No data collection** — Zero analytics, tracking, or telemetry
-- **API keys stored locally** — Keys are saved in your browser's `localStorage` only. They are **never** sent to any server other than the AI provider you configured.
-- **Ollama runs locally** — When using Ollama, all AI processing happens on your machine
 - **No hardcoded secrets** — The repository contains zero API keys or credentials
-
-### Important for Contributors
-
-- **Never commit API keys** — The `.gitignore` excludes `.env` files
-- API keys are entered by each user in their own browser and stored in `localStorage`
-- Cloud API calls (OpenAI, Groq, OpenRouter) go directly from the browser to the provider's API
+- **API keys stay on your machine** — Stored in your browser's `localStorage` only, never sent anywhere except directly to the AI provider you chose
+- **Ollama runs locally** — All AI processing happens on your machine
+- **Open source** — Inspect every line of code yourself
 
 ---
 
@@ -92,38 +93,34 @@ ChromaPulse is designed with privacy in mind:
 ```
 ChromaPulse/
 ├── index.html          # Main app HTML
-├── app.js              # Core application logic
+├── app.js              # Core application logic (1700+ lines)
 ├── styles.css          # Application styles
 ├── onboarding.js       # First-launch guided tour
 ├── onboarding.css      # Tour styles
 ├── pantone.js          # Pantone color database
-├── start.bat           # Windows quick-start script
 ├── chromapulse.py      # Desktop app wrapper (pywebview)
+├── chromapulse.spec    # PyInstaller build spec
+├── start.bat           # Windows quick-start script
 ├── docs/
 │   └── OLLAMA_SETUP.md # Ollama setup guide
-├── .gitignore          # Git ignore rules
 └── README.md           # This file
 ```
 
 ---
 
-## 🎨 Screenshots
+## 🛠️ Building the EXE
 
-> Launch the app and press `Spacebar` to generate your first palette!
-
----
-
-## 🛠️ Development
-
-No build step required — this is pure HTML/CSS/JS. Just edit and refresh.
+To build the standalone exe yourself:
 
 ```bash
-# Start local server
-python -m http.server 8484
+# Install dependencies
+pip install pyinstaller pywebview
 
-# Open in browser
-start http://localhost:8484
+# Build single-file exe
+pyinstaller chromapulse.spec --noconfirm --clean
 ```
+
+The exe will be in `dist/ChromaPulse.exe`.
 
 ---
 

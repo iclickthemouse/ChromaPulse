@@ -5,7 +5,6 @@ node_modules/
 dist/
 build/
 *.exe
-*.spec
 
 # Python
 __pycache__/

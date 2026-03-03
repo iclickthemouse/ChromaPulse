@@ -3,16 +3,21 @@
 > AI-powered color palette generator with harmony rules, Pantone matching, and beautiful exports.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-0078D6.svg)
 ![Offline](https://img.shields.io/badge/works-offline-green.svg)
 
 ---
 
 ## ⬇️ Download
 
-**[Download ChromaPulse.exe →](https://github.com/iclickthemouse/ChromaPulse/releases/latest)**
+Grab the latest build from the [Releases page](https://github.com/iclickthemouse/ChromaPulse/releases/latest):
 
-Just download, double-click, and start creating. No install required.
+| Platform | Download |
+|---|---|
+| **Windows** | `ChromaPulse.exe` — double-click to run |
+| **macOS** | `ChromaPulse.dmg` — drag to Applications |
+
+No install needed. Works offline out of the box.
 
 ---
 
@@ -37,9 +42,10 @@ Just download, double-click, and start creating. No install required.
 
 ### Option 1: Standalone App (Recommended)
 
-1. Download **ChromaPulse.exe** from the [Releases page](https://github.com/iclickthemouse/ChromaPulse/releases/latest)
-2. Double-click to launch — opens in its own native window
-3. No Python, no browser, no install needed
+1. Download from the [Releases page](https://github.com/iclickthemouse/ChromaPulse/releases/latest)
+2. **Windows**: Run `ChromaPulse.exe` — opens in its own native window
+3. **macOS**: Open `ChromaPulse.dmg`, drag to Applications, launch
+4. No Python, no browser, no install needed
 
 ### Option 2: Run from Source
 
@@ -108,17 +114,22 @@ ChromaPulse/
 
 ---
 
-## 🛠️ Building the EXE
+## 🛠️ Building Locally
 
-To build the standalone exe yourself:
+To build the standalone app yourself:
 
 ```bash
 # Install dependencies
 pip install pyinstaller pywebview
 
-# Build single-file exe
+# Windows — single-file exe
 pyinstaller chromapulse.spec --noconfirm --clean
+
+# macOS — .app bundle + DMG
+pyinstaller chromapulse-mac.spec --noconfirm --clean
 ```
+
+Builds are also generated automatically via GitHub Actions when you create a release.
 
 The exe will be in `dist/ChromaPulse.exe`.
 

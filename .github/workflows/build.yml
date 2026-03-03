@@ -1,0 +1,59 @@
+name: Build & Release
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyinstaller pywebview
+
+      - name: Build exe
+        run: pyinstaller chromapulse.spec --noconfirm --clean
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/ChromaPulse.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyinstaller pywebview
+
+      - name: Build app
+        run: pyinstaller chromapulse-mac.spec --noconfirm --clean
+
+      - name: Create DMG
+        run: |
+          # Create a DMG from the .app bundle
+          mkdir -p dmg_contents
+          cp -r "dist/ChromaPulse.app" dmg_contents/
+          ln -s /Applications dmg_contents/Applications
+          hdiutil create -volname "ChromaPulse" -srcfolder dmg_contents -ov -format UDZO "dist/ChromaPulse.dmg"
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/ChromaPulse.dmg
